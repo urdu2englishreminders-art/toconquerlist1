@@ -1,0 +1,1248 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>The Momentum Command Center</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Amiri:ital,wght@0,400;0,700;1,400&family=DM+Mono:wght@400;500&family=Syne:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+<style>
+/* ═══════════════════════════════════════════════
+   RESET & ROOT
+═══════════════════════════════════════════════ */
+*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+:root {
+  --gold: #c9a84c;
+  --gold-light: #f0d080;
+  --gold-dim: rgba(201,168,76,0.25);
+  --white: #ffffff;
+  --off-white: rgba(255,255,255,0.88);
+  --muted: rgba(255,255,255,0.45);
+  --very-muted: rgba(255,255,255,0.2);
+  --card-bg: rgba(255,255,255,0.07);
+  --card-border: rgba(255,255,255,0.1);
+  --radius: 14px;
+  --radius-sm: 8px;
+  --font-display: 'Syne', sans-serif;
+  --font-arabic: 'Amiri', serif;
+  --font-mono: 'DM Mono', monospace;
+  --transition: all 0.35s cubic-bezier(0.4, 0, 0.2, 1);
+
+  /* Section accent colours */
+  --c-dashboard: #c9a84c;
+  --c-medical: #378ADD;
+  --c-quran: #4caf50;
+  --c-physical: #FF6B00;
+  --c-language: #9B59B6;
+  --c-personal: #1D9E75;
+  --c-logistics: #E24B4A;
+  --c-settings: #888888;
+
+  /* Section backgrounds */
+  --bg-dashboard: #0f1923;
+  --bg-medical: #0a1628;
+  --bg-quran: #0d1f10;
+  --bg-physical: #1a0e00;
+  --bg-language: #1a0a1e;
+  --bg-personal: #0d1a1a;
+  --bg-logistics: #1f0808;
+  --bg-settings: #141414;
+
+  /* Section secondary backgrounds */
+  --bg2-dashboard: #162030;
+  --bg2-medical: #0d1e38;
+  --bg2-quran: #122318;
+  --bg2-physical: #261500;
+  --bg2-language: #250d2c;
+  --bg2-personal: #102424;
+  --bg2-logistics: #2c0c0c;
+  --bg2-settings: #1e1e1e;
+}
+
+html, body { height: 100%; font-family: var(--font-display); }
+
+body {
+  background: var(--bg-dashboard);
+  color: var(--white);
+  min-height: 100vh;
+  transition: background 0.5s ease;
+  overflow-x: hidden;
+}
+
+/* ═══════════════════════════════════════════════
+   SCROLLBAR
+═══════════════════════════════════════════════ */
+::-webkit-scrollbar { width: 4px; }
+::-webkit-scrollbar-track { background: transparent; }
+::-webkit-scrollbar-thumb { background: var(--very-muted); border-radius: 4px; }
+
+/* ═══════════════════════════════════════════════
+   GEOMETRIC BACKGROUND PATTERN
+═══════════════════════════════════════════════ */
+body::before {
+  content: '';
+  position: fixed;
+  inset: 0;
+  background-image:
+    repeating-linear-gradient(
+      45deg,
+      transparent,
+      transparent 40px,
+      rgba(255,255,255,0.012) 40px,
+      rgba(255,255,255,0.012) 41px
+    ),
+    repeating-linear-gradient(
+      -45deg,
+      transparent,
+      transparent 40px,
+      rgba(255,255,255,0.012) 40px,
+      rgba(255,255,255,0.012) 41px
+    );
+  pointer-events: none;
+  z-index: 0;
+}
+
+.app { position: relative; z-index: 1; max-width: 900px; margin: 0 auto; padding-bottom: 40px; }
+
+/* ═══════════════════════════════════════════════
+   BASMALA
+═══════════════════════════════════════════════ */
+.basmala {
+  text-align: center;
+  padding: 18px 20px 14px;
+  background: rgba(0,0,0,0.4);
+  border-bottom: 1px solid var(--gold-dim);
+  position: relative;
+  overflow: hidden;
+}
+.basmala::before, .basmala::after {
+  content: '✦';
+  position: absolute;
+  top: 50%;
+  transform: translateY(-50%);
+  color: var(--gold-dim);
+  font-size: 18px;
+}
+.basmala::before { left: 20px; }
+.basmala::after { right: 20px; }
+.basmala-arabic {
+  font-family: var(--font-arabic);
+  font-size: 26px;
+  color: var(--gold-light);
+  letter-spacing: 2px;
+  line-height: 1.4;
+  display: block;
+}
+.basmala-latin {
+  font-size: 10px;
+  color: var(--muted);
+  letter-spacing: 2px;
+  text-transform: uppercase;
+  margin-top: 4px;
+  font-family: var(--font-mono);
+}
+
+/* ═══════════════════════════════════════════════
+   TOPBAR
+═══════════════════════════════════════════════ */
+.topbar {
+  padding: 14px 20px 10px;
+  background: rgba(0,0,0,0.35);
+  border-bottom: 1px solid var(--very-muted);
+  backdrop-filter: blur(10px);
+  -webkit-backdrop-filter: blur(10px);
+}
+.topbar-row1 {
+  display: flex;
+  align-items: baseline;
+  justify-content: space-between;
+  margin-bottom: 10px;
+  flex-wrap: wrap;
+  gap: 8px;
+}
+.app-title {
+  font-size: 18px;
+  font-weight: 800;
+  color: var(--white);
+  letter-spacing: -0.3px;
+  text-transform: uppercase;
+}
+.app-title .accent { color: var(--gold); }
+.date-chip {
+  font-family: var(--font-mono);
+  font-size: 10px;
+  color: var(--muted);
+  background: var(--card-bg);
+  border: 1px solid var(--card-border);
+  border-radius: 20px;
+  padding: 3px 10px;
+  letter-spacing: 0.5px;
+}
+.win-bar-wrap {}
+.win-bar-header {
+  display: flex;
+  justify-content: space-between;
+  font-size: 10px;
+  color: var(--muted);
+  font-family: var(--font-mono);
+  letter-spacing: 1px;
+  text-transform: uppercase;
+  margin-bottom: 5px;
+}
+.win-bar-header span:last-child { color: var(--white); }
+.win-track {
+  height: 6px;
+  background: rgba(255,255,255,0.08);
+  border-radius: 6px;
+  overflow: hidden;
+}
+.win-fill {
+  height: 100%;
+  border-radius: 6px;
+  background: var(--gold);
+  transition: width 0.6s cubic-bezier(0.4, 0, 0.2, 1);
+  width: 0%;
+}
+
+/* ═══════════════════════════════════════════════
+   NAVIGATION
+═══════════════════════════════════════════════ */
+.nav {
+  display: flex;
+  gap: 4px;
+  padding: 10px 16px;
+  background: rgba(0,0,0,0.3);
+  border-bottom: 1px solid var(--very-muted);
+  flex-wrap: wrap;
+  backdrop-filter: blur(10px);
+  -webkit-backdrop-filter: blur(10px);
+  position: sticky;
+  top: 0;
+  z-index: 100;
+}
+.nav-btn {
+  font-family: var(--font-display);
+  font-size: 11px;
+  font-weight: 600;
+  padding: 5px 12px;
+  border-radius: 20px;
+  border: 1px solid var(--very-muted);
+  background: transparent;
+  color: var(--muted);
+  cursor: pointer;
+  white-space: nowrap;
+  letter-spacing: 0.3px;
+  transition: var(--transition);
+  text-transform: uppercase;
+}
+.nav-btn:hover { color: var(--white); border-color: rgba(255,255,255,0.3); background: var(--card-bg); }
+.nav-btn.active { color: #000; border-color: transparent; font-weight: 700; }
+
+/* ═══════════════════════════════════════════════
+   SECTIONS
+═══════════════════════════════════════════════ */
+.section { display: none; padding: 16px 20px; animation: fadeUp 0.3s ease; }
+.section.active { display: block; }
+@keyframes fadeUp {
+  from { opacity: 0; transform: translateY(8px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+
+/* ═══════════════════════════════════════════════
+   SECTION HERO
+═══════════════════════════════════════════════ */
+.hero {
+  display: flex;
+  align-items: center;
+  gap: 14px;
+  padding: 14px 16px;
+  margin: -16px -20px 16px;
+  background: rgba(0,0,0,0.3);
+  border-bottom: 1px solid var(--very-muted);
+}
+.hero-glyph {
+  font-size: 32px;
+  line-height: 1;
+  flex-shrink: 0;
+}
+.hero-text {}
+.hero-title {
+  font-size: 17px;
+  font-weight: 700;
+  color: var(--white);
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+}
+.hero-quote {
+  font-size: 11px;
+  color: var(--muted);
+  margin-top: 3px;
+  font-style: italic;
+  line-height: 1.5;
+}
+
+/* ═══════════════════════════════════════════════
+   SECTION LABEL
+═══════════════════════════════════════════════ */
+.label {
+  font-size: 10px;
+  font-weight: 700;
+  letter-spacing: 1.5px;
+  text-transform: uppercase;
+  color: var(--muted);
+  margin-bottom: 10px;
+  font-family: var(--font-mono);
+}
+
+/* ═══════════════════════════════════════════════
+   GRID & CARDS
+═══════════════════════════════════════════════ */
+.grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(160px, 1fr)); gap: 10px; }
+.grid-2 { grid-template-columns: 1fr 1fr; }
+
+.card {
+  background: var(--card-bg);
+  border: 1px solid var(--card-border);
+  border-radius: var(--radius);
+  padding: 13px;
+  transition: border-color 0.2s;
+  position: relative;
+  overflow: hidden;
+}
+.card:hover { border-color: rgba(255,255,255,0.2); }
+.card-accent {
+  position: absolute;
+  top: 0; left: 0;
+  width: 100%; height: 2px;
+}
+.card-head { display: flex; align-items: flex-start; justify-content: space-between; margin-bottom: 8px; }
+.card-icon { font-size: 20px; line-height: 1; }
+.dot { width: 8px; height: 8px; border-radius: 50%; flex-shrink: 0; margin-top: 3px; }
+.dot-red { background: #ff6b6b; }
+.dot-green { background: #69ff47; }
+.dot-grey { background: rgba(255,255,255,0.2); }
+.dot-gold { background: var(--gold); }
+.dot-blue { background: #378ADD; }
+.card-title { font-size: 13px; font-weight: 600; color: var(--white); margin-bottom: 2px; }
+.card-sub { font-size: 11px; color: var(--muted); margin-bottom: 8px; }
+.big-num { font-size: 28px; font-weight: 700; color: var(--white); line-height: 1; font-family: var(--font-mono); }
+.small-unit { font-size: 11px; color: var(--muted); }
+.pbar { height: 3px; background: rgba(255,255,255,0.1); border-radius: 3px; overflow: hidden; margin-top: 8px; }
+.pfill { height: 100%; border-radius: 3px; transition: width 0.5s ease; }
+.ring-wrap { display: flex; justify-content: center; margin: 6px 0; }
+
+/* ═══════════════════════════════════════════════
+   FORM ELEMENTS
+═══════════════════════════════════════════════ */
+input[type=text], input[type=number], select, textarea {
+  background: rgba(255,255,255,0.07);
+  border: 1px solid var(--card-border);
+  border-radius: var(--radius-sm);
+  color: var(--white);
+  font-family: var(--font-display);
+  font-size: 13px;
+  padding: 7px 10px;
+  outline: none;
+  transition: border-color 0.2s;
+}
+input[type=text]:focus, input[type=number]:focus { border-color: rgba(255,255,255,0.35); }
+input::placeholder { color: var(--muted); }
+input[type=checkbox] { width: 16px; height: 16px; cursor: pointer; accent-color: var(--gold); }
+
+.row { display: flex; gap: 8px; align-items: center; flex-wrap: wrap; margin-bottom: 8px; }
+.row-label { font-size: 12px; color: var(--muted); min-width: 70px; }
+
+.btn {
+  font-family: var(--font-display);
+  font-size: 12px;
+  font-weight: 600;
+  padding: 7px 14px;
+  border-radius: var(--radius-sm);
+  border: 1px solid var(--card-border);
+  background: var(--card-bg);
+  color: var(--white);
+  cursor: pointer;
+  letter-spacing: 0.3px;
+  transition: var(--transition);
+  text-transform: uppercase;
+}
+.btn:hover { background: rgba(255,255,255,0.15); border-color: rgba(255,255,255,0.3); }
+.btn.active { font-weight: 700; }
+.btn-wide { width: 100%; text-align: center; }
+.btn-primary { color: #000; border-color: transparent; font-weight: 700; }
+
+/* ═══════════════════════════════════════════════
+   CHECK ROWS
+═══════════════════════════════════════════════ */
+.check-row {
+  display: flex; align-items: center; gap: 10px;
+  margin-bottom: 8px; cursor: pointer;
+  padding: 4px 0;
+}
+.check-label { font-size: 13px; color: var(--off-white); }
+
+/* ═══════════════════════════════════════════════
+   DIVIDER
+═══════════════════════════════════════════════ */
+.divider { height: 1px; background: var(--card-border); margin: 14px 0; }
+.mt { margin-top: 16px; }
+.mb { margin-bottom: 16px; }
+
+/* ═══════════════════════════════════════════════
+   ASAP ITEMS
+═══════════════════════════════════════════════ */
+.asap-item {
+  display: flex; align-items: center; gap: 10px;
+  padding: 10px 12px; margin-bottom: 6px;
+  background: var(--card-bg); border: 1px solid var(--card-border);
+  border-radius: var(--radius-sm); transition: border-color 0.2s;
+}
+.asap-item:hover { border-color: rgba(255,255,255,0.2); }
+.asap-text { font-size: 13px; color: var(--off-white); flex: 1; }
+.triple-tag {
+  font-size: 9px; font-weight: 700; letter-spacing: 0.5px;
+  background: rgba(255,107,0,0.2); color: #ff9944;
+  border-radius: 4px; padding: 2px 6px; text-transform: uppercase;
+  font-family: var(--font-mono);
+}
+
+/* ═══════════════════════════════════════════════
+   LEAVE BLOCK
+═══════════════════════════════════════════════ */
+.leave-block {
+  background: var(--card-bg); border: 1px solid var(--card-border);
+  border-radius: var(--radius); padding: 14px; margin-bottom: 8px;
+}
+.leave-num { font-size: 36px; font-weight: 700; color: var(--white); font-family: var(--font-mono); line-height: 1; }
+.leave-label { font-size: 11px; color: var(--muted); margin-top: 2px; margin-bottom: 10px; }
+
+/* ═══════════════════════════════════════════════
+   DHIKR COUNTER
+═══════════════════════════════════════════════ */
+.dhikr-wrap {
+  display: grid; grid-template-columns: 1fr 1fr; gap: 10px;
+}
+.dhikr-card {
+  background: rgba(0,0,0,0.25);
+  border: 1px solid var(--card-border);
+  border-radius: var(--radius);
+  padding: 14px;
+  text-align: center;
+  position: relative;
+}
+.dhikr-arabic {
+  font-family: var(--font-arabic);
+  font-size: 20px;
+  color: var(--gold-light);
+  margin-bottom: 2px;
+  line-height: 1.6;
+}
+.dhikr-latin { font-size: 10px; color: var(--muted); letter-spacing: 0.5px; margin-bottom: 10px; font-family: var(--font-mono); }
+.dhikr-count {
+  font-size: 52px; font-weight: 800; line-height: 1;
+  color: var(--white); font-family: var(--font-mono);
+  transition: transform 0.08s ease;
+  margin-bottom: 2px;
+}
+.dhikr-count.bump { transform: scale(1.2); }
+.dhikr-of { font-size: 11px; color: var(--muted); margin-bottom: 12px; font-family: var(--font-mono); }
+.dhikr-tap {
+  width: 100%; padding: 12px; border-radius: var(--radius-sm);
+  border: none; font-family: var(--font-display); font-size: 14px; font-weight: 700;
+  cursor: pointer; letter-spacing: 0.5px; text-transform: uppercase;
+  transition: transform 0.1s, opacity 0.2s; color: #fff;
+}
+.dhikr-tap:active { transform: scale(0.94); }
+.dhikr-ctrl { display: flex; gap: 5px; margin-top: 7px; }
+.dhikr-ctrl button { flex: 1; }
+.milestone-pop {
+  position: absolute; top: 8px; right: 8px;
+  font-size: 10px; font-weight: 700;
+  background: var(--gold); color: #1a0e00;
+  border-radius: 5px; padding: 2px 6px;
+  opacity: 0; transition: opacity 0.3s;
+  pointer-events: none; font-family: var(--font-mono);
+}
+.milestone-pop.show { opacity: 1; }
+.done-badge {
+  display: none; font-size: 10px; font-weight: 700;
+  color: #69ff47; background: rgba(105,255,71,0.15);
+  border-radius: 4px; padding: 2px 8px; margin-top: 5px;
+  font-family: var(--font-mono); letter-spacing: 0.5px;
+}
+.done-badge.show { display: inline-block; }
+
+/* ═══════════════════════════════════════════════
+   INFO TABLE
+═══════════════════════════════════════════════ */
+.info-table { width: 100%; }
+.info-table td { padding: 7px 0; font-size: 13px; border-bottom: 1px solid var(--card-border); }
+.info-table td:first-child { color: var(--muted); }
+.info-table td:last-child { text-align: right; color: var(--white); font-weight: 500; font-family: var(--font-mono); }
+.info-table tr:last-child td { border-bottom: none; }
+
+/* ═══════════════════════════════════════════════
+   PROFILE TABS
+═══════════════════════════════════════════════ */
+.profile-tabs { display: flex; gap: 5px; margin-bottom: 14px; flex-wrap: wrap; }
+
+/* ═══════════════════════════════════════════════
+   FOOD DROP
+═══════════════════════════════════════════════ */
+.food-drop {
+  border: 2px dashed var(--card-border); border-radius: var(--radius);
+  padding: 24px; text-align: center; cursor: pointer;
+  transition: all 0.2s; margin-bottom: 10px;
+}
+.food-drop:hover { border-color: rgba(255,255,255,0.3); background: var(--card-bg); }
+.food-drop-icon { font-size: 28px; display: block; margin-bottom: 8px; }
+.food-drop-text { font-size: 13px; color: var(--muted); }
+.cal-result { text-align: center; padding: 10px 0; }
+.cal-num { font-size: 36px; font-weight: 800; font-family: var(--font-mono); color: var(--white); }
+.cal-break { font-size: 12px; color: var(--muted); margin-top: 4px; font-family: var(--font-mono); }
+
+/* ═══════════════════════════════════════════════
+   EXPORT BTN
+═══════════════════════════════════════════════ */
+.export-btn {
+  display: inline-flex; align-items: center; gap: 8px;
+  font-family: var(--font-display); font-size: 12px; font-weight: 700;
+  padding: 9px 18px; border-radius: var(--radius-sm);
+  border: 1px solid rgba(29,158,117,0.5);
+  background: rgba(29,158,117,0.15); color: #5DCAA5;
+  cursor: pointer; letter-spacing: 0.5px; text-transform: uppercase;
+  transition: var(--transition); margin-top: 10px;
+}
+.export-btn:hover { background: rgba(29,158,117,0.25); }
+
+/* ═══════════════════════════════════════════════
+   THEME TRANSITIONS
+═══════════════════════════════════════════════ */
+body.t-medical { background: var(--bg-medical); }
+body.t-quran { background: var(--bg-quran); }
+body.t-physical { background: var(--bg-physical); }
+body.t-language { background: var(--bg-language); }
+body.t-personal { background: var(--bg-personal); }
+body.t-logistics { background: var(--bg-logistics); }
+body.t-settings { background: var(--bg-settings); }
+body.t-dashboard { background: var(--bg-dashboard); }
+
+/* ═══════════════════════════════════════════════
+   RESPONSIVE
+═══════════════════════════════════════════════ */
+@media (max-width: 500px) {
+  .grid { grid-template-columns: 1fr 1fr; }
+  .dhikr-wrap { grid-template-columns: 1fr; }
+  .app-title { font-size: 14px; }
+  .basmala-arabic { font-size: 20px; }
+  .section { padding: 12px 14px; }
+  .hero { padding: 12px 14px; margin: -12px -14px 14px; }
+}
+</style>
+</head>
+<body class="t-dashboard">
+
+<div class="app">
+
+  <!-- BASMALA -->
+  <div class="basmala">
+    <span class="basmala-arabic">بِسْمِ اللهِ الرَّحْمٰنِ الرَّحِيْمِ</span>
+    <div class="basmala-latin">In the name of Allah, the Most Gracious, the Most Merciful</div>
+  </div>
+
+  <!-- TOPBAR -->
+  <div class="topbar">
+    <div class="topbar-row1">
+      <div class="app-title">The <span class="accent" id="accentTitle">Momentum</span> Command Center</div>
+      <div class="date-chip" id="topDate"></div>
+    </div>
+    <div class="win-bar-header">
+      <span>Daily Win</span>
+      <span id="winPct">0%</span>
+    </div>
+    <div class="win-track"><div class="win-fill" id="winFill"></div></div>
+  </div>
+
+  <!-- NAV -->
+  <nav class="nav" id="mainNav">
+    <button class="nav-btn active" onclick="go('dashboard',this)">Dashboard</button>
+    <button class="nav-btn" onclick="go('medical',this)">Medical</button>
+    <button class="nav-btn" onclick="go('quran',this)">Quran &amp; Seerah</button>
+    <button class="nav-btn" onclick="go('physical',this)">Bio-Tracker</button>
+    <button class="nav-btn" onclick="go('language',this)">Language</button>
+    <button class="nav-btn" onclick="go('personal',this)">Personal</button>
+    <button class="nav-btn" onclick="go('logistics',this)">Logistics</button>
+    <button class="nav-btn" onclick="go('settings',this)">Settings</button>
+  </nav>
+
+  <!-- ═══════ DASHBOARD ═══════ -->
+  <div class="section active" id="sec-dashboard">
+    <div class="hero">
+      <div class="hero-glyph">🌙</div>
+      <div class="hero-text">
+        <div class="hero-title">Command Center</div>
+        <div class="hero-quote">"Take up good deeds only as much as you are able, for Allah does not get tired until you do." — Prophet Muhammad ﷺ</div>
+      </div>
+    </div>
+    <div class="grid" id="dashGrid"></div>
+  </div>
+
+  <!-- ═══════ MEDICAL ═══════ -->
+  <div class="section" id="sec-medical">
+    <div class="hero">
+      <div class="hero-glyph">🫀</div>
+      <div class="hero-text">
+        <div class="hero-title">Cardiac Imaging Hub</div>
+        <div class="hero-quote">"Allah has not sent down a disease except that He has also sent down its cure." — Bukhari</div>
+      </div>
+    </div>
+    <div class="label">Modalities</div>
+    <div class="grid" id="medGrid"></div>
+    <div class="divider"></div>
+    <div class="label">Daily Floaters</div>
+    <div class="check-row" onclick="tc('uworld')"><input type="checkbox" id="uworld"><span class="check-label">UWorld — 10 questions <span class="triple-tag">3x daily</span></span></div>
+    <div class="check-row" onclick="tc('video')"><input type="checkbox" id="video"><span class="check-label">Video learning session</span></div>
+    <div class="check-row" onclick="tc('cases')"><input type="checkbox" id="cases"><span class="check-label">Review reported cases</span></div>
+  </div>
+
+  <!-- ═══════ QURAN & SEERAH ═══════ -->
+  <div class="section" id="sec-quran">
+    <div class="hero">
+      <div class="hero-glyph">📖</div>
+      <div class="hero-text">
+        <div class="hero-title">Family Quran &amp; Seerah</div>
+        <div class="hero-quote">"The best of you are those who learn the Quran and teach it." — Bukhari</div>
+      </div>
+    </div>
+    <div class="profile-tabs" id="quranTabs"></div>
+    <div id="quranContent"></div>
+  </div>
+
+  <!-- ═══════ PHYSICAL ═══════ -->
+  <div class="section" id="sec-physical">
+    <div class="hero">
+      <div class="hero-glyph">⚡</div>
+      <div class="hero-text">
+        <div class="hero-title">Bio-Tracker</div>
+        <div class="hero-quote">"The strong believer is better and more beloved to Allah than the weak believer." — Muslim</div>
+      </div>
+    </div>
+    <div class="label">Movement &amp; Body</div>
+    <div class="grid">
+      <div class="card">
+        <div class="card-accent" style="background:var(--c-physical)"></div>
+        <div class="card-head"><span class="card-icon">👟</span><div class="dot dot-gold" id="stepsDot"></div></div>
+        <div class="card-title">Steps</div>
+        <div class="big-num" id="stepsVal">0</div>
+        <div class="small-unit">/ 10,000 goal</div>
+        <div class="pbar"><div class="pfill" id="stepsFill" style="width:0%;background:var(--c-physical)"></div></div>
+        <div class="row mt"><input type="number" id="stepsIn" placeholder="steps" style="flex:1;min-width:0"><button class="btn" onclick="logSteps()">Log</button></div>
+      </div>
+      <div class="card">
+        <div class="card-accent" style="background:var(--c-physical)"></div>
+        <div class="card-head"><span class="card-icon">⚖️</span><div class="dot dot-grey" id="weightDot"></div></div>
+        <div class="card-title">Weight</div>
+        <div class="big-num" id="weightVal">—</div>
+        <div class="small-unit">kg</div>
+        <div class="row mt"><input type="number" id="weightIn" placeholder="kg" style="flex:1;min-width:0"><button class="btn" onclick="logWeight()">Log</button></div>
+      </div>
+      <div class="card">
+        <div class="card-accent" style="background:var(--c-physical)"></div>
+        <div class="card-head"><span class="card-icon">🏋️</span><div class="dot dot-grey" id="gymDot"></div></div>
+        <div class="card-title">Gym Session</div>
+        <div class="big-num" id="gymVal">—</div>
+        <div class="small-unit" id="gymSub">not done today</div>
+        <button class="btn btn-wide mt" id="gymBtn" onclick="toggleGym()">Mark Done</button>
+      </div>
+      <div class="card">
+        <div class="card-accent" style="background:var(--c-physical)"></div>
+        <div class="card-head"><span class="card-icon">💪</span><div class="dot dot-gold"></div></div>
+        <div class="card-title">Pushups / Pullups</div>
+        <div class="big-num"><span id="pushVal">0</span><span style="font-size:18px;color:var(--muted)"> / </span><span id="pullVal">0</span></div>
+        <div class="small-unit">reps today</div>
+        <div class="row mt">
+          <input type="number" id="pushIn" placeholder="push" style="width:70px">
+          <input type="number" id="pullIn" placeholder="pull" style="width:70px">
+          <button class="btn" onclick="logCal()">Log</button>
+        </div>
+      </div>
+    </div>
+    <div class="divider"></div>
+    <div class="label">AI Calorie Vision</div>
+    <div class="food-drop" id="foodDrop" onclick="aiCal()">
+      <span class="food-drop-icon">📸</span>
+      <span class="food-drop-text">Tap to upload a food photo for AI calorie estimate</span>
+    </div>
+    <div id="calResult" style="display:none">
+      <div class="cal-result">
+        <div class="cal-num" id="calNum"></div>
+        <div class="cal-break" id="calBreak"></div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ═══════ LANGUAGE ═══════ -->
+  <div class="section" id="sec-language">
+    <div class="hero">
+      <div class="hero-glyph">🌐</div>
+      <div class="hero-text">
+        <div class="hero-title">Trilingual Tracks</div>
+        <div class="hero-quote">"He who learns Arabic for Allah's sake has gained one rank of nobility." — attributed</div>
+      </div>
+    </div>
+    <div class="grid">
+      <div class="card">
+        <div class="card-accent" style="background:var(--c-language)"></div>
+        <div class="card-head"><span class="card-icon">🇬🇧</span><div class="dot dot-green"></div></div>
+        <div class="card-title">English</div>
+        <div class="check-row" onclick="tc('engRead')"><input type="checkbox" id="engRead"><span class="check-label">Reading (30 min)</span></div>
+        <div class="check-row" onclick="tc('engWrite')"><input type="checkbox" id="engWrite"><span class="check-label">Writing practice</span></div>
+        <div class="check-row" onclick="tc('engVocab')"><input type="checkbox" id="engVocab"><span class="check-label">5 new words</span></div>
+      </div>
+      <div class="card">
+        <div class="card-accent" style="background:var(--c-language)"></div>
+        <div class="card-head"><span class="card-icon">🕌</span><div class="dot dot-gold"></div></div>
+        <div class="card-title">Arabic</div>
+        <div class="check-row" onclick="mirror('arabVocab','quranVocab')"><input type="checkbox" id="arabVocab"><span class="check-label">Vocabulary <span style="font-size:10px;color:var(--muted)">(mirrors Quran)</span></span></div>
+        <div class="check-row" onclick="tc('arabGram')"><input type="checkbox" id="arabGram"><span class="check-label">Grammar lesson</span></div>
+        <div class="check-row" onclick="tc('arabConv')"><input type="checkbox" id="arabConv"><span class="check-label">Conversation</span></div>
+      </div>
+      <div class="card">
+        <div class="card-accent" style="background:var(--c-language)"></div>
+        <div class="card-head"><span class="card-icon">☪️</span><div class="dot dot-grey"></div></div>
+        <div class="card-title">Urdu</div>
+        <div class="check-row" onclick="tc('urduRead')"><input type="checkbox" id="urduRead"><span class="check-label">Reading</span></div>
+        <div class="check-row" onclick="tc('urduStory')"><input type="checkbox" id="urduStory"><span class="check-label">Story with kids</span></div>
+        <div class="check-row" onclick="tc('urduVocab')"><input type="checkbox" id="urduVocab"><span class="check-label">Vocabulary</span></div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ═══════ PERSONAL ═══════ -->
+  <div class="section" id="sec-personal">
+    <div class="hero">
+      <div class="hero-glyph">🌿</div>
+      <div class="hero-text">
+        <div class="hero-title">Personal &amp; Legacy</div>
+        <div class="hero-quote">"When a man dies, his deeds come to an end except three: sadaqah jariyah, beneficial knowledge, righteous child." — Muslim</div>
+      </div>
+    </div>
+
+    <div class="grid mb">
+      <div class="card">
+        <div class="card-accent" style="background:var(--c-personal)"></div>
+        <div class="card-head"><span class="card-icon">📚</span><div class="dot dot-blue"></div></div>
+        <div class="card-title">Library</div>
+        <div class="card-sub">Now reading</div>
+        <input type="text" id="nowReading" placeholder="Book title..." style="width:100%;margin-bottom:8px">
+        <div style="display:flex;justify-content:space-between;font-size:11px;color:var(--muted);">
+          <span>Total list</span>
+          <span id="bookCount" style="color:var(--white);font-family:var(--font-mono)">0 books</span>
+        </div>
+        <button class="btn btn-wide mt" onclick="addBook()">+ Add to list</button>
+      </div>
+      <div class="card">
+        <div class="card-accent" style="background:var(--c-personal)"></div>
+        <div class="card-head"><span class="card-icon">🤲</span><div class="dot dot-green"></div></div>
+        <div class="card-title">Charity &amp; Zakat</div>
+        <div class="big-num" id="zakatVal">£0</div>
+        <div class="small-unit">given this month</div>
+        <div class="row mt">
+          <input type="number" id="zakatIn" placeholder="£ amount" style="flex:1;min-width:0">
+          <button class="btn" onclick="logZakat()">Log</button>
+        </div>
+      </div>
+      <div class="card">
+        <div class="card-accent" style="background:var(--c-personal)"></div>
+        <div class="card-head"><span class="card-icon">🌐</span><div class="dot dot-gold"></div></div>
+        <div class="card-title">Social Projects</div>
+        <div class="check-row" onclick="tc('mashwara')"><input type="checkbox" id="mashwara"><span class="check-label">mymashwara.com</span></div>
+        <div class="check-row" onclick="tc('ubedouin')"><input type="checkbox" id="ubedouin"><span class="check-label">The Urban Bedouin</span></div>
+      </div>
+    </div>
+
+    <div class="label">Tasawwuf &amp; Dhikr</div>
+    <div class="card mb">
+      <div class="check-row" onclick="tc('mAdhkar')"><input type="checkbox" id="mAdhkar"><span class="check-label">Morning adhkar</span></div>
+      <div class="check-row" onclick="tc('eReflect')"><input type="checkbox" id="eReflect"><span class="check-label">Evening reflection / muraqabah</span></div>
+      <div class="check-row" onclick="tc('sohbet')"><input type="checkbox" id="sohbet"><span class="check-label">Sohbet / spiritual reading</span></div>
+      <div class="divider"></div>
+      <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:10px;">
+        <div class="label" style="margin-bottom:0">Daily Dhikr Counter</div>
+        <span onclick="resetAllDhikr()" style="font-size:10px;color:var(--muted);cursor:pointer;text-decoration:underline;font-family:var(--font-mono)">reset all</span>
+      </div>
+      <div style="display:flex;justify-content:space-between;font-size:11px;color:var(--muted);font-family:var(--font-mono);margin-bottom:10px;padding:8px 10px;background:rgba(0,0,0,0.2);border-radius:var(--radius-sm)">
+        <span>Istighfar: <strong id="istigLbl" style="color:var(--white)">0/100</strong></span>
+        <span>Salawat: <strong id="salawatLbl" style="color:var(--white)">0/100</strong></span>
+      </div>
+      <div class="dhikr-wrap">
+        <div class="dhikr-card">
+          <div class="milestone-pop" id="istig-ms"></div>
+          <div class="dhikr-arabic">أَسْتَغْفِرُ اللّٰهَ</div>
+          <div class="dhikr-latin">Astaghfirullāh</div>
+          <div class="ring-wrap" id="istig-ring"></div>
+          <div class="dhikr-count" id="istig-n" style="color:#a0e8b0">0</div>
+          <div class="dhikr-of" id="istig-of">of 100</div>
+          <span class="done-badge" id="istig-done">COMPLETE ✓</span>
+          <button class="dhikr-tap" id="istig-tap" onclick="tapDhikr('istig')" style="background:rgba(29,158,117,0.35)">Tap</button>
+          <div class="dhikr-ctrl">
+            <button class="btn" onclick="undoDhikr('istig')">Undo</button>
+            <button class="btn" onclick="resetDhikr('istig')">Reset</button>
+          </div>
+        </div>
+        <div class="dhikr-card">
+          <div class="milestone-pop" id="salawat-ms"></div>
+          <div class="dhikr-arabic" style="font-size:15px;line-height:1.8">اللَّهُمَّ صَلِّ عَلَىٰ مُحَمَّد</div>
+          <div class="dhikr-latin">Allāhumma ṣalli 'alā Muḥammad</div>
+          <div class="ring-wrap" id="salawat-ring"></div>
+          <div class="dhikr-count" id="salawat-n" style="color:#a0c8f0">0</div>
+          <div class="dhikr-of" id="salawat-of">of 100</div>
+          <span class="done-badge" id="salawat-done">COMPLETE ✓</span>
+          <button class="dhikr-tap" id="salawat-tap" onclick="tapDhikr('salawat')" style="background:rgba(55,138,221,0.35)">Tap</button>
+          <div class="dhikr-ctrl">
+            <button class="btn" onclick="undoDhikr('salawat')">Undo</button>
+            <button class="btn" onclick="resetDhikr('salawat')">Reset</button>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ═══════ LOGISTICS ═══════ -->
+  <div class="section" id="sec-logistics">
+    <div class="hero">
+      <div class="hero-glyph">⚡</div>
+      <div class="hero-text">
+        <div class="hero-title">Logistics &amp; ASAP</div>
+        <div class="hero-quote">"Begin with what Allah has commanded first." — Ibn al-Qayyim</div>
+      </div>
+    </div>
+    <div class="label">ASAP List</div>
+    <div id="asapList"></div>
+    <div class="row">
+      <input type="text" id="asapIn" placeholder="New urgent task..." style="flex:1;min-width:0">
+      <label style="display:flex;align-items:center;gap:6px;font-size:11px;color:var(--muted);cursor:pointer">
+        <input type="checkbox" id="tripleFlag">3x
+      </label>
+      <button class="btn" onclick="addAsap()">Add</button>
+    </div>
+    <div class="divider"></div>
+    <div class="label">Leave Tracker</div>
+    <div class="grid grid-2">
+      <div class="leave-block">
+        <div class="leave-label">Annual Leave</div>
+        <div class="leave-num" id="annualDays">25</div>
+        <div class="leave-label">days remaining</div>
+        <div class="row mt">
+          <input type="number" id="annualIn" placeholder="days used" style="flex:1;min-width:0">
+          <button class="btn" onclick="useLeave('annual')">Use</button>
+        </div>
+      </div>
+      <div class="leave-block">
+        <div class="leave-label">Study Leave</div>
+        <div class="leave-num" id="studyDays">10</div>
+        <div class="leave-label">days remaining</div>
+        <div class="row mt">
+          <input type="number" id="studyIn" placeholder="days used" style="flex:1;min-width:0">
+          <button class="btn" onclick="useLeave('study')">Use</button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ═══════ SETTINGS ═══════ -->
+  <div class="section" id="sec-settings">
+    <div class="hero">
+      <div class="hero-glyph">⚙️</div>
+      <div class="hero-text">
+        <div class="hero-title">Settings &amp; Data</div>
+        <div class="hero-quote">Your data, your trust — always yours to export and own.</div>
+      </div>
+    </div>
+    <div class="label">Cloud Sync</div>
+    <div class="card mb">
+      <table class="info-table">
+        <tr><td>Backend</td><td>Supabase (recommended)</td></tr>
+        <tr><td>Status</td><td>Ready to connect</td></tr>
+        <tr><td>Data size</td><td id="dataSize">—</td></tr>
+        <tr><td>Last save</td><td id="lastSave">—</td></tr>
+      </table>
+      <button class="export-btn" onclick="exportData()">↓ Export all data as JSON</button>
+    </div>
+    <div class="label">Dhikr Daily Goals</div>
+    <div class="card mb">
+      <div class="row">
+        <span class="row-label">Istighfar</span>
+        <input type="number" id="istigGoal" placeholder="100" style="width:80px">
+        <span class="row-label">Salawat</span>
+        <input type="number" id="salawatGoal" placeholder="100" style="width:80px">
+        <button class="btn" onclick="setGoals()">Set</button>
+      </div>
+    </div>
+    <div class="label">Notifications</div>
+    <div class="card">
+      <div class="check-row" onclick="tc('n1')"><input type="checkbox" id="n1" checked><span class="check-label">Morning reminder (8:00 am)</span></div>
+      <div class="check-row" onclick="tc('n2')"><input type="checkbox" id="n2" checked><span class="check-label">Midday check-in (1:00 pm)</span></div>
+      <div class="check-row" onclick="tc('n3')"><input type="checkbox" id="n3" checked><span class="check-label">Evening wrap-up (8:00 pm)</span></div>
+    </div>
+  </div>
+
+</div><!-- /app -->
+
+<script>
+/* ═══════════════════════════════════════
+   STATE
+═══════════════════════════════════════ */
+const S = {
+  steps: 0, weight: null, gym: false, push: 0, pull: 0,
+  zakat: 0, books: 0, annualLeave: 25, studyLeave: 10,
+  checks: {},
+  dhikr: { istig: { count: 0, goal: 100 }, salawat: { count: 0, goal: 100 } },
+  asap: [
+    { text: 'Submit CMR report — patient 047', triple: true },
+    { text: 'Book study day — FRCR prep', triple: false },
+    { text: 'Call school re: Zainab schedule', triple: false }
+  ],
+  medical: {
+    CMR:        { done: 3, total: 10, icon: '🫀' },
+    CTCA:       { done: 1, total: 8,  icon: '🩻' },
+    TTE:        { done: 7, total: 10, icon: '❤️' },
+    TOE:        { done: 2, total: 5,  icon: '🔬' },
+    MPS:        { done: 0, total: 6,  icon: '☢️' },
+    'PET CT':   { done: 1, total: 4,  icon: '🧬' },
+    'Cardiac CT':{ done: 4, total: 8, icon: '📡' }
+  },
+  activeProfile: 0,
+  quranProgress: {}
+};
+const PROFILES = ['Self', 'Wife', 'Zaid', 'Yusuf', 'Maryam'];
+const QKEYS = ['Memorisation', 'Vocabulary', 'Tafsir', 'Recitation', 'Seerah'];
+const QICONS = ['🕌', '📖', '💡', '🎙️', '🌟'];
+PROFILES.forEach(p => {
+  S.quranProgress[p] = {};
+  QKEYS.forEach(k => S.quranProgress[p][k] = { done: Math.floor(Math.random()*4), total: 10 });
+});
+
+const THEMES = {
+  dashboard:'t-dashboard', medical:'t-medical', quran:'t-quran',
+  physical:'t-physical', language:'t-language', personal:'t-personal',
+  logistics:'t-logistics', settings:'t-settings'
+};
+const ACCENTS = {
+  dashboard:'var(--c-dashboard)', medical:'var(--c-medical)', quran:'var(--c-quran)',
+  physical:'var(--c-physical)', language:'var(--c-language)', personal:'var(--c-personal)',
+  logistics:'var(--c-logistics)', settings:'var(--c-settings)'
+};
+
+/* ═══════════════════════════════════════
+   NAVIGATION
+═══════════════════════════════════════ */
+let curSection = 'dashboard';
+function go(id, btn) {
+  curSection = id;
+  document.querySelectorAll('.section').forEach(s => s.classList.remove('active'));
+  document.querySelectorAll('.nav-btn').forEach(b => b.classList.remove('active'));
+  document.getElementById('sec-' + id).classList.add('active');
+  if (btn) btn.classList.add('active');
+  Object.values(THEMES).forEach(t => document.body.classList.remove(t));
+  document.body.classList.add(THEMES[id] || 't-dashboard');
+  // Update nav-btn active colour
+  document.querySelectorAll('.nav-btn').forEach(b => {
+    b.style.background = '';
+    b.style.color = '';
+    b.style.borderColor = '';
+  });
+  if (btn) {
+    btn.style.background = ACCENTS[id] || 'var(--gold)';
+    btn.style.color = '#000';
+    btn.style.borderColor = 'transparent';
+  }
+  document.getElementById('winFill').style.background = ACCENTS[id] || 'var(--gold)';
+  if (id === 'medical') renderMedical();
+  if (id === 'quran') renderQuran();
+  if (id === 'logistics') renderAsap();
+  if (id === 'settings') updateSettings();
+  if (id === 'dashboard') renderDashboard();
+}
+
+/* ═══════════════════════════════════════
+   SVG RING
+═══════════════════════════════════════ */
+function ring(pct, label, color) {
+  const r = 28, cx = 36, cy = 36, sw = 6;
+  const circ = 2 * Math.PI * r;
+  const dash = (Math.min(pct, 100) / 100) * circ;
+  return `<svg width="72" height="72" viewBox="0 0 72 72">
+    <circle cx="${cx}" cy="${cy}" r="${r}" fill="none" stroke="rgba(255,255,255,0.08)" stroke-width="${sw}"/>
+    <circle cx="${cx}" cy="${cy}" r="${r}" fill="none" stroke="${color}" stroke-width="${sw}"
+      stroke-dasharray="${dash.toFixed(1)} ${circ.toFixed(1)}" stroke-linecap="round"
+      transform="rotate(-90 ${cx} ${cy})"/>
+    <text x="${cx}" y="${cy}" text-anchor="middle" dominant-baseline="middle"
+      style="font-size:12px;font-weight:700;fill:rgba(255,255,255,0.9);font-family:'DM Mono',monospace">${label}</text>
+  </svg>`;
+}
+
+/* ═══════════════════════════════════════
+   DASHBOARD
+═══════════════════════════════════════ */
+function renderDashboard() {
+  const medDone = Object.values(S.medical).reduce((a,d)=>a+d.done,0);
+  const medTotal = Object.values(S.medical).reduce((a,d)=>a+d.total,0);
+  const dhPct = Math.round(((S.dhikr.istig.count/S.dhikr.istig.goal)+(S.dhikr.salawat.count/S.dhikr.salawat.goal))/2*100);
+  const items = [
+    { icon:'🫀', t:'Medical', s:'CMR · 7 modalities', pct: Math.round((medDone/medTotal)*100), c:'var(--c-medical)' },
+    { icon:'📖', t:'Quran & Seerah', s:'5 family profiles', pct: 52, c:'var(--c-quran)' },
+    { icon:'👟', t:'Physical', s:'Steps · Gym · Calisthenics', pct: S.steps>0?Math.min(Math.round((S.steps/10000)*100),100):0, c:'var(--c-physical)' },
+    { icon:'🌐', t:'Language', s:'EN · AR · UR', pct: 30, c:'var(--c-language)' },
+    { icon:'🌿', t:'Personal', s:'Library · Dhikr · Legacy', pct: Math.min(dhPct,100), c:'var(--c-personal)' },
+    { icon:'⚡', t:'Logistics', s: S.asap.length + ' ASAP items', pct: 60, c:'var(--c-logistics)' }
+  ];
+  document.getElementById('dashGrid').innerHTML = items.map(i => `
+    <div class="card">
+      <div class="card-accent" style="background:${i.c}"></div>
+      <div class="card-head"><span class="card-icon">${i.icon}</span><div class="dot" style="background:${i.c};opacity:0.9"></div></div>
+      <div class="card-title">${i.t}</div>
+      <div class="card-sub">${i.s}</div>
+      <div class="ring-wrap">${ring(i.pct, Math.round(i.pct)+'%', i.c)}</div>
+      <div class="pbar"><div class="pfill" style="width:${Math.round(i.pct)}%;background:${i.c}"></div></div>
+    </div>`).join('');
+}
+
+/* ═══════════════════════════════════════
+   MEDICAL
+═══════════════════════════════════════ */
+function renderMedical() {
+  document.getElementById('medGrid').innerHTML = Object.entries(S.medical).map(([name, d]) => {
+    const pct = Math.round((d.done / d.total) * 100);
+    const dotClass = d.done === 0 ? 'dot-grey' : d.done/d.total < 0.3 ? 'dot-red' : 'dot-green';
+    return `<div class="card">
+      <div class="card-accent" style="background:var(--c-medical)"></div>
+      <div class="card-head"><span class="card-icon">${d.icon}</span><div class="dot ${dotClass}"></div></div>
+      <div class="card-title">${name}</div>
+      <div class="ring-wrap">${ring(pct, d.done+'/'+d.total, 'var(--c-medical)')}</div>
+      <div class="pbar"><div class="pfill" style="width:${pct}%;background:var(--c-medical)"></div></div>
+    </div>`;
+  }).join('');
+}
+
+/* ═══════════════════════════════════════
+   QURAN
+═══════════════════════════════════════ */
+function renderQuran() {
+  document.getElementById('quranTabs').innerHTML = PROFILES.map((p,i) =>
+    `<button class="btn ${S.activeProfile===i?'active':''}" onclick="setProfile(${i})" style="${S.activeProfile===i?'background:var(--c-quran);color:#000;border-color:transparent':''}">${p}</button>`
+  ).join('');
+  const p = PROFILES[S.activeProfile];
+  document.getElementById('quranContent').innerHTML = `<div class="grid">` + QKEYS.map((k,i) => {
+    const d = S.quranProgress[p][k];
+    const pct = Math.round((d.done/d.total)*100);
+    return `<div class="card">
+      <div class="card-accent" style="background:var(--c-quran)"></div>
+      <div class="card-head"><span class="card-icon">${QICONS[i]}</span><div class="dot ${d.done>0?'dot-green':'dot-grey'}"></div></div>
+      <div class="card-title">${k}</div>
+      <div class="ring-wrap">${ring(pct, d.done+'/'+d.total, 'var(--c-quran)')}</div>
+      <div class="pbar"><div class="pfill" style="width:${pct}%;background:var(--c-quran)"></div></div>
+      <div class="row mt">
+        <button class="btn" onclick="adjQ('${p}','${k}',-1)">−</button>
+        <button class="btn" style="flex:1" onclick="adjQ('${p}','${k}',1)">+1 session</button>
+      </div>
+    </div>`;
+  }).join('') + `</div>`;
+}
+function setProfile(i) { S.activeProfile = i; renderQuran(); }
+function adjQ(profile, key, delta) {
+  const d = S.quranProgress[profile][key];
+  d.done = Math.max(0, Math.min(d.total, d.done + delta));
+  if (key === 'Vocabulary') { const el = document.getElementById('arabVocab'); if (el) el.checked = d.done > 0; }
+  renderQuran(); updateWin();
+}
+
+/* ═══════════════════════════════════════
+   PHYSICAL
+═══════════════════════════════════════ */
+function logSteps() {
+  const v = parseInt(document.getElementById('stepsIn').value) || 0;
+  S.steps = v;
+  document.getElementById('stepsVal').textContent = v.toLocaleString();
+  const pct = Math.min(Math.round((v/10000)*100), 100);
+  document.getElementById('stepsFill').style.width = pct + '%';
+  document.getElementById('stepsDot').className = 'dot ' + (v >= 10000 ? 'dot-green' : v > 3000 ? 'dot-gold' : 'dot-red');
+  updateWin();
+}
+function logWeight() {
+  const v = parseFloat(document.getElementById('weightIn').value);
+  if (!isNaN(v)) {
+    S.weight = v;
+    document.getElementById('weightVal').textContent = v.toFixed(1);
+    document.getElementById('weightDot').className = 'dot dot-green';
+  }
+}
+function toggleGym() {
+  S.gym = !S.gym;
+  document.getElementById('gymVal').textContent = S.gym ? 'DONE' : '—';
+  document.getElementById('gymSub').textContent = S.gym ? 'session complete' : 'not done today';
+  document.getElementById('gymBtn').textContent = S.gym ? 'Undo' : 'Mark Done';
+  document.getElementById('gymDot').className = 'dot ' + (S.gym ? 'dot-green' : 'dot-grey');
+  updateWin();
+}
+function logCal() {
+  S.push = parseInt(document.getElementById('pushIn').value) || 0;
+  S.pull = parseInt(document.getElementById('pullIn').value) || 0;
+  document.getElementById('pushVal').textContent = S.push;
+  document.getElementById('pullVal').textContent = S.pull;
+}
+function aiCal() {
+  document.getElementById('foodDrop').innerHTML = '<span class="food-drop-icon">⏳</span><span class="food-drop-text">Analysing with AI...</span>';
+  setTimeout(() => {
+    const c = Math.round(Math.random()*400+300);
+    document.getElementById('calResult').style.display = 'block';
+    document.getElementById('calNum').textContent = c + ' kcal';
+    document.getElementById('calBreak').textContent = 'Est. Protein 28g · Carbs 45g · Fat 18g';
+    document.getElementById('foodDrop').innerHTML = '<span class="food-drop-icon">📸</span><span class="food-drop-text">Upload another photo</span>';
+  }, 1500);
+}
+
+/* ═══════════════════════════════════════
+   PERSONAL
+═══════════════════════════════════════ */
+function logZakat() {
+  const v = parseFloat(document.getElementById('zakatIn').value) || 0;
+  S.zakat += v;
+  document.getElementById('zakatVal').textContent = '£' + S.zakat.toFixed(2);
+  document.getElementById('zakatIn').value = '';
+}
+function addBook() {
+  S.books++;
+  document.getElementById('bookCount').textContent = S.books + ' books';
+}
+
+/* ═══════════════════════════════════════
+   DHIKR
+═══════════════════════════════════════ */
+function tapDhikr(key) {
+  const d = S.dhikr[key];
+  if (d.count >= d.goal) return;
+  d.count++;
+  const el = document.getElementById(key + '-n');
+  el.classList.remove('bump'); void el.offsetWidth; el.classList.add('bump');
+  setTimeout(() => el.classList.remove('bump'), 120);
+  if ([33, 50, 100, 200, 300, 500, 1000].includes(d.count)) {
+    const m = document.getElementById(key + '-ms');
+    m.textContent = d.count + '!'; m.classList.add('show');
+    setTimeout(() => m.classList.remove('show'), 2000);
+  }
+  renderDhikr(key); updateWin();
+}
+function undoDhikr(key) { if (S.dhikr[key].count > 0) S.dhikr[key].count--; renderDhikr(key); updateWin(); }
+function resetDhikr(key) { S.dhikr[key].count = 0; renderDhikr(key); updateWin(); }
+function resetAllDhikr() { ['istig','salawat'].forEach(k => { S.dhikr[k].count = 0; renderDhikr(k); }); updateWin(); }
+function renderDhikr(key) {
+  const d = S.dhikr[key];
+  const pct = Math.min(Math.round((d.count / d.goal) * 100), 100);
+  const color = key === 'istig' ? '#a0e8b0' : '#a0c8f0';
+  document.getElementById(key + '-n').textContent = d.count;
+  document.getElementById(key + '-of').textContent = 'of ' + d.goal;
+  document.getElementById(key + '-ring').innerHTML = ring(pct, pct + '%', color);
+  const badge = document.getElementById(key + '-done');
+  if (d.count >= d.goal) badge.classList.add('show'); else badge.classList.remove('show');
+  const lbl = key === 'istig' ? 'istigLbl' : 'salawatLbl';
+  document.getElementById(lbl).textContent = d.count + '/' + d.goal;
+}
+function setGoals() {
+  const ig = parseInt(document.getElementById('istigGoal').value);
+  const sg = parseInt(document.getElementById('salawatGoal').value);
+  if (ig > 0) S.dhikr.istig.goal = ig;
+  if (sg > 0) S.dhikr.salawat.goal = sg;
+  renderDhikr('istig'); renderDhikr('salawat');
+}
+
+/* ═══════════════════════════════════════
+   LOGISTICS
+═══════════════════════════════════════ */
+function renderAsap() {
+  document.getElementById('asapList').innerHTML = S.asap.map((item, i) => `
+    <div class="asap-item">
+      <div class="dot dot-red"></div>
+      <span class="asap-text">${item.text}${item.triple ? ' <span class="triple-tag">3× reminder</span>' : ''}</span>
+      <button class="btn" onclick="doneAsap(${i})">Done</button>
+    </div>`).join('');
+}
+function addAsap() {
+  const t = document.getElementById('asapIn').value.trim();
+  const triple = document.getElementById('tripleFlag').checked;
+  if (!t) return;
+  S.asap.unshift({ text: t, triple });
+  document.getElementById('asapIn').value = '';
+  document.getElementById('tripleFlag').checked = false;
+  renderAsap();
+}
+function doneAsap(i) { S.asap.splice(i, 1); renderAsap(); }
+function useLeave(type) {
+  const inp = document.getElementById(type === 'annual' ? 'annualIn' : 'studyIn');
+  const v = parseInt(inp.value) || 0;
+  if (type === 'annual') { S.annualLeave = Math.max(0, S.annualLeave - v); document.getElementById('annualDays').textContent = S.annualLeave; }
+  else { S.studyLeave = Math.max(0, S.studyLeave - v); document.getElementById('studyDays').textContent = S.studyLeave; }
+  inp.value = '';
+}
+
+/* ═══════════════════════════════════════
+   CHECKS & WIN BAR
+═══════════════════════════════════════ */
+function tc(id) {
+  const el = document.getElementById(id);
+  if (!el) return;
+  el.checked = !el.checked;
+  S.checks[id] = el.checked;
+  updateWin();
+}
+function mirror(src, tgt) {
+  tc(src);
+  const s = document.getElementById(src), t = document.getElementById(tgt);
+  if (s && t) t.checked = s.checked;
+  updateWin();
+}
+function updateWin() {
+  const done = Object.values(S.checks).filter(Boolean).length
+    + (S.dhikr.istig.count >= S.dhikr.istig.goal ? 1 : 0)
+    + (S.dhikr.salawat.count >= S.dhikr.salawat.goal ? 1 : 0)
+    + (S.gym ? 1 : 0)
+    + (S.steps >= 10000 ? 1 : 0);
+  const total = Math.max(Object.keys(S.checks).length + 4, 1);
+  const pct = Math.round((done / total) * 100);
+  document.getElementById('winFill').style.width = pct + '%';
+  document.getElementById('winPct').textContent = pct + '%';
+}
+
+/* ═══════════════════════════════════════
+   SETTINGS
+═══════════════════════════════════════ */
+function updateSettings() {
+  document.getElementById('dataSize').textContent = (JSON.stringify(S).length / 1024).toFixed(1) + ' KB';
+  document.getElementById('lastSave').textContent = new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' });
+}
+function exportData() {
+  const a = document.createElement('a');
+  a.href = URL.createObjectURL(new Blob([JSON.stringify(S, null, 2)], { type: 'application/json' }));
+  a.download = 'momentum_' + new Date().toISOString().slice(0, 10) + '.json';
+  a.click();
+}
+
+/* ═══════════════════════════════════════
+   INIT
+═══════════════════════════════════════ */
+document.getElementById('topDate').textContent = new Date().toLocaleDateString('en-GB', {
+  weekday: 'long', day: 'numeric', month: 'long', year: 'numeric'
+});
+// Set initial nav-btn style
+document.querySelector('.nav-btn.active').style.background = 'var(--c-dashboard)';
+document.querySelector('.nav-btn.active').style.color = '#000';
+document.querySelector('.nav-btn.active').style.borderColor = 'transparent';
+
+renderDashboard();
+renderAsap();
+renderDhikr('istig');
+renderDhikr('salawat');
+</script>
+</body>
+</html>
